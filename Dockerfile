@@ -13,6 +13,7 @@ LABEL maintainer="AdGuard Team <devteam@adguard.com>"
 # Update CA certs
 RUN apk --no-cache --update add ca-certificates && \
     rm -rf /var/cache/apk/* && mkdir -p /opt/adguardhome
+RUN apk install setcap
 
 COPY --from=build /src/AdGuardHome/AdGuardHome /opt/adguardhome/AdGuardHome
 
