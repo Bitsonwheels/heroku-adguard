@@ -6,7 +6,8 @@ RUN apk add --update bash git make build-base npm && \
 WORKDIR ./AdGuardHome
 COPY . ./AdGuardHome
 RUN git clone https://github.com/Bitsonwheels/heroku-adguard.git && \
-    cd heroku-adguard
+    cd heroku-adguard  && \
+    apk install golang
 RUN make
 
 FROM alpine:latest
