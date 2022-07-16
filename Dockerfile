@@ -1,12 +1,12 @@
 FROM golang:alpine as builder
 
 RUN apk add --update bash git make build-base npm && \
-    rm -rf /var/cache/apk/* && \
-curl -s -S -L https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -c beta
+    rm -rf /var/cache/apk/*
 
 WORKDIR ./AdGuardHome
 COPY . ./AdGuardHome
 RUN make -j 1
+RUN npm --prefix client --quiet --no-progress --ignore-engines --ignore-optional --ignore-platform --ignore-scripts ci
 
 FROM alpine:latest
 LABEL maintainer="AdGuard Team <devteam@adguard.com>"
