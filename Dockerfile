@@ -4,14 +4,14 @@ RUN apk add --update bash git make go build-base npm && \
     rm -rf /var/cache/apk/*
 
 # Configure Go
-ENV GOROOT /usr/lib/go
-ENV GOPATH /go
-ENV PATH /go/bin:$PATH
-RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
+#ENV GOROOT /usr/lib/go
+#ENV GOPATH /go
+#ENV PATH /go/bin:$PATH
+#RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
 # Install Glide
-RUN go get -u github.com/Masterminds/glide/...
-WORKDIR $GOPATH
-CMD ["make"]
+#RUN go get -u github.com/Masterminds/glide/...
+#WORKDIR $GOPATH
+#CMD ["make"]
 
 WORKDIR ./AdGuardHome
 COPY . ./AdGuardHome
