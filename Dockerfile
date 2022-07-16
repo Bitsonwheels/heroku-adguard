@@ -20,7 +20,7 @@ RUN git clone https://github.com/Bitsonwheels/heroku-adguard.git && \
     wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz  && \
     tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz  && \
     export PATH=$PATH:/usr/local/go/bin
-RUN apk add setcap go
+RUN apk add libcap go
 RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/master.zip
 RUN unzip master.zip -d /opt/adguardhome/AdGuardHome && \
 cd /opt/adguardhome/AdGuardHome
