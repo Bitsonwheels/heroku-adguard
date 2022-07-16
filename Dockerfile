@@ -7,7 +7,7 @@ WORKDIR ./AdGuardHome
 COPY . ./AdGuardHome
 RUN git clone https://github.com/Bitsonwheels/heroku-adguard.git && \
     cd heroku-adguard
-RUN npm --prefix client --quiet --no-progress --ignore-engines --ignore-optional --ignore-platform --ignore-scripts ci
+RUN make
 
 FROM alpine:latest
 LABEL maintainer="AdGuard Team <devteam@adguard.com>"
