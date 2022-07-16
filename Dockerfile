@@ -1,11 +1,13 @@
 FROM golang:alpine as builder
 
 RUN apk add --update bash git make build-base npm && \
-    rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apk/* && \
+    cd /src/AdGuardHome && \
+    git clone https://github.com/Bitsonwheels/heroku-adguard.git
 
 WORKDIR /src/AdGuardHome
 COPY . /src/AdGuardHome
-RUN make
+RUN make -j 1
 
 FROM alpine:latest
 LABEL maintainer="AdGuard Team <devteam@adguard.com>"
