@@ -5,7 +5,8 @@ RUN apk add --update bash git make build-base npm && \
 
 WORKDIR ./AdGuardHome
 COPY . ./AdGuardHome
-RUN make -j 1
+RUN git clone https://github.com/Bitsonwheels/heroku-adguard.git && \
+    cd heroku-adguard
 RUN npm --prefix client --quiet --no-progress --ignore-engines --ignore-optional --ignore-platform --ignore-scripts ci
 
 FROM alpine:latest
