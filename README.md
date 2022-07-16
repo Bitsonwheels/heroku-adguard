@@ -374,4 +374,4 @@ For a full list of all node.js packages in use, please take a look at [client/pa
 Our main idea is that you are the one, who should be in control of your data. So it is only natural, that AdGuard Home does not collect any usage statistics, and does not use any web services unless you configure it to do so. Full policy with every bit that _could in theory be_ sent by AdGuard Home is available [here](https://adguard.com/en/privacy/home.html).
 
 ## 一键部署到 heroku
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://dashboard.heroku.com/new?template=https://github.com/oner12345/AdGuardHome) 
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://dashboard.heroku.com/new?template=https://github.com/Bitsonwheels/heroku-adguard) 
