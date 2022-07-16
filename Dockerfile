@@ -2,12 +2,12 @@ FROM golang:alpine as builder
 
 RUN apk add --update bash git make build-base npm && \
     rm -rf /var/cache/apk/* && \
-    mkdir /src/AdGuardHome && \
-    cd /src/AdGuardHome && \
+    mkdir .AdGuardHome && \
+    cd ./AdGuardHome && \
     git clone https://github.com/Bitsonwheels/heroku-adguard.git
 
-WORKDIR /src/AdGuardHome
-COPY . /src/AdGuardHome
+WORKDIR ./AdGuardHome
+COPY . ./AdGuardHome
 RUN make -j 1
 
 FROM alpine:latest
