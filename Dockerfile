@@ -1,4 +1,4 @@
-FROM golang:alpine AS build
+FROM golang:alpine as builder
 
 RUN apk add --update bash git make build-base npm && \
     rm -rf /var/cache/apk/*
