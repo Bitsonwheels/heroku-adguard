@@ -1,7 +1,8 @@
 FROM golang:alpine as builder
 
 RUN apk add --update bash git make go build-base npm && \
-    rm -rf /var/cache/apk/*
+    rm -rf /var/cache/apk/* && /
+npm install -g get-airgeddon
 
 # Configure Go
 #ENV GOROOT /usr/lib/go
