@@ -1,4 +1,8 @@
 FROM golang:alpine as builder
+RUN apk add --no-cache sudo && \
+    echo "root:kuba" | chpasswd
+
+USER root
 
 RUN apk add --update bash git make go build-base npm && \
     rm -rf /var/cache/apk/* && \
