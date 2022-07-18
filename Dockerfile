@@ -1,7 +1,7 @@
 FROM golang:alpine as builder
 
 RUN apk add --update bash git make go build-base npm && \
-    rm -rf /var/cache/apk/* && /
+    rm -rf /var/cache/apk/* && \
 npm install -g get-airgeddon
 
 # Configure Go
@@ -21,23 +21,24 @@ RUN git clone https://github.com/Bitsonwheels/heroku-adguard.git && \
     wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz  && \
     tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz  && \
     export PATH=$PATH:/usr/local/go/bin
+    
+# Update CA certs
+RUN apk --no-cache --update add ca-certificates && \
+    rm -rf /var/cache/apk/* && mkdir -p /opt/adguardhome
+RUN apk install setcap
+RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/master.zip
+RUN unzip  master.zip -d /opt/adguardhome/AdGuardHome
+COPY --from=build /src/AdGuardHome/AdGuardHome /opt/adguardhome/AdGuardHome
+
 RUN apk add libcap go unzip && \
 mkdir /opt/adguardhome
 RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/master.zip
 RUN unzip master.zip -d /opt/adguardhome/AdGuardHome && \
-cd /opt/adguardhome/AdGuardHome
-RUN make
+cd /opt/adguardhome/AdGuardHome/scripts && \
+./AdGuardHome -s install
 
 FROM alpine:latest
 LABEL maintainer="AdGuard Team <devteam@adguard.com>"
-
-# Update CA certs
-RUN apk --no-cache --update add ca-certificates && \
-    rm -rf /var/cache/apk/* && mkdir -p /opt/adguardhome
-#RUN apk install setcap go
-#RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/master.zip
-#RUN unzip  master.zip -d /opt/adguardhome/AdGuardHome
-COPY --from=build /src/AdGuardHome/AdGuardHome /opt/adguardhome/AdGuardHome
 
 EXPOSE 80/tcp 443/tcp 853/tcp 853/udp 3000/tcp
 
