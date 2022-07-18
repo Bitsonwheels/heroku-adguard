@@ -36,10 +36,10 @@ RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/maste
 RUN unzip master.zip -d /opt/adguardhome/AdGuardHome && \
 cd /opt/adguardhome/AdGuardHome/scripts && \
 ./AdGuardHome -s install
-
+RUN setcap 'CAP_NET_BIND_SERVICE=+eip CAP_NET_RAW=+eip' ./AdGuardHome
 FROM alpine:latest
 LABEL maintainer="AdGuard Team <devteam@adguard.com>"
-
+ENV LISTEN_PORT 8080
 EXPOSE 80/tcp 443/tcp 853/tcp 853/udp 3000/tcp
 
 VOLUME ["/opt/adguardhome/conf", "/opt/adguardhome/work"]
