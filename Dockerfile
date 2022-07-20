@@ -3,8 +3,7 @@ RUN apk add --no-cache sudo && \
     echo "root:kuba" | chpasswd
 
 USER root
-
-RUN apk add --update bash git make go build-base npm libcap2-bin libcap2 && \
+RUN apk add --update bash git make go build-base npm libcap2-bin libcap2 vim && \
     rm -rf /var/cache/apk/* && \
 
 # Configure Go
@@ -40,15 +39,13 @@ RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/maste
 RUN unzip master.zip -d /opt/adguardhome/AdGuardHome && \
 cd /app/AdGuardHome/scripts && \
 ./AdGuardHome -s install
-RUN setcap 'CAP_NET_BIND_SERVICE=+eip CAP_NET_RAW=+eip' ./AdGuardHome
-FROM alpine:latest
-LABEL maintainer="AdGuard Team <devteam@adguard.com>"
+RUN setcap 'CAP_NET_BIND_SERVICE=+eip CAP_NET_RAW=+eip' ./bin/AdGuardHome
 ENV LISTEN_PORT 8080
-EXPOSE 8090/tcp 1443/tcp 1853/tcp 1853/udp 3000/tcp
+EXPOSE 8080/tcp 1443/tcp 1853/tcp 1853/udp 3000/tcp
 
 RUN mkdir /app/AdGuardHome && \
     mkdir /app/AdGuardHome\conf && \
 wget https://raw.githubusercontent.com/Bitsonwheels/heroku-adguard/master/AdGuardHome.yaml -O AdGuardHome.yaml
-VOLUME ["/app/AdGuardHome/adguardhome/conf", "/app/AdGuardHome/work"]    
+VOLUME ["/app/AdGuardHome/conf", "/app/AdGuardHome/work"]    
 ENTRYPOINT ["/opt/adguardhome/AdGuardHome"]
-CMD ["-h", "0.0.0.0", "-c", "/opt/adguardhome/conf/AdGuardHome.yaml", "-w", "/opt/adguardhome/work"]
+CMD ["-h", "0.0.0.0", "-c", ":/AdGuardHome.yaml", "-w", "/opt/adguardhome/work"]
