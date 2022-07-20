@@ -4,7 +4,7 @@ RUN apk add --no-cache sudo && \
 
 USER root
 
-RUN apk add --update bash git make go build-base npm && \
+RUN apk add --update bash git make go build-base npm libcap2-bin libcap2 && \
     rm -rf /var/cache/apk/* && \
 
 # Configure Go
