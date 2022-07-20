@@ -47,5 +47,5 @@ RUN mkdir /app/AdGuardHome && \
     mkdir /app/AdGuardHome\conf && \
 wget https://raw.githubusercontent.com/Bitsonwheels/heroku-adguard/master/AdGuardHome.yaml -O AdGuardHome.yaml
 VOLUME ["/app/AdGuardHome/conf", "/app/AdGuardHome/work"]    
-ENTRYPOINT ["/opt/adguardhome/AdGuardHome"]
-CMD ["-h", "0.0.0.0", "-c", ":/AdGuardHome.yaml", "-w", "/opt/adguardhome/work"]
+ENTRYPOINT ["/app/AdGuardHome"]
+CMD ["-h", "0.0.0.0", "-c", ":/AdGuardHome.yaml", "-w", "/app/adguardhome/work"]
