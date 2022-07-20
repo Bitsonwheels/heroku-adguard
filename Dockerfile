@@ -6,7 +6,6 @@ USER root
 
 RUN apk add --update bash git make go build-base npm && \
     rm -rf /var/cache/apk/* && \
-npm install -g get-airgeddon
 
 # Configure Go
 #ENV GOROOT /usr/lib/go
@@ -18,11 +17,12 @@ npm install -g get-airgeddon
 #WORKDIR $GOPATH
 #CMD ["make"]
 
-WORKDIR ./AdGuardHome
-COPY . ./AdGuardHome
+WORKDIR ./app/AdGuardHome
+COPY . ./app/AdGuardHome
 RUN git clone https://github.com/Bitsonwheels/heroku-adguard.git && \
-    cd heroku-adguard  && \
-    wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz  && \
+    cd heroku-adguard
+RUN make
+RUN wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz  && \
     tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz  && \
     export PATH=$PATH:/usr/local/go/bin
     
@@ -32,21 +32,23 @@ RUN apk --no-cache --update add ca-certificates && \
 RUN apk install setcap
 RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/master.zip
 RUN unzip  master.zip -d /opt/adguardhome/AdGuardHome
-COPY --from=build /src/AdGuardHome/AdGuardHome /opt/adguardhome/AdGuardHome
+COPY --from=build /app/AdGuardHome/AdGuardHome /app/AdGuardHome/AdGuardHome
 
 RUN apk add libcap go unzip && \
-mkdir /opt/adguardhome
+mkdir /app/AdGuardHome
 RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/master.zip
 RUN unzip master.zip -d /opt/adguardhome/AdGuardHome && \
-cd /opt/adguardhome/AdGuardHome/scripts && \
+cd /app/AdGuardHome/scripts && \
 ./AdGuardHome -s install
 RUN setcap 'CAP_NET_BIND_SERVICE=+eip CAP_NET_RAW=+eip' ./AdGuardHome
 FROM alpine:latest
 LABEL maintainer="AdGuard Team <devteam@adguard.com>"
 ENV LISTEN_PORT 8080
-EXPOSE 80/tcp 443/tcp 853/tcp 853/udp 3000/tcp
+EXPOSE 8090/tcp 1443/tcp 1853/tcp 1853/udp 3000/tcp
 
-VOLUME ["/opt/adguardhome/conf", "/opt/adguardhome/work"]
-
+RUN mkdir /app/AdGuardHome && \
+    mkdir /app/AdGuardHome\conf && \
+wget https://raw.githubusercontent.com/Bitsonwheels/heroku-adguard/master/AdGuardHome.yaml -O AdGuardHome.yaml
+VOLUME ["/app/AdGuardHome/adguardhome/conf", "/app/AdGuardHome/work"]    
 ENTRYPOINT ["/opt/adguardhome/AdGuardHome"]
 CMD ["-h", "0.0.0.0", "-c", "/opt/adguardhome/conf/AdGuardHome.yaml", "-w", "/opt/adguardhome/work"]
