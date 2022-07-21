@@ -1,20 +1,15 @@
-FROM golang:alpine as builder
-RUN apk add --no-cache sudo && \
-    echo "root:kuba" | chpasswd
+FROM golang:alpine AS build
+RUN adduser -D bits
+USER bits
 
-USER root
-RUN apk add --update bash git make go build-base npm libcap2-bin libcap2 vim && \
-    rm -rf /var/cache/apk/* && \
-
-# Configure Go
-#ENV GOROOT /usr/lib/go
-#ENV GOPATH /go
-#ENV PATH /go/bin:$PATH
-#RUN mkdir -p ${GOPATH}/src ${GOPATH}/bin
-# Install Glide
-#RUN go get -u github.com/Masterminds/glide/...
-#WORKDIR $GOPATH
-#CMD ["make"]
+RUN apk add --update bash git make build-base npm vim mc go && \
+    rm -rf /var/cache/apk/*
+    
+# install cap package and set the capabilities on busybox
+RUN apk add --update --no-cache libcap && \
+    setcap cap_setgid=ep /bin/AdGuardHome && \
+    setcap 'CAP_NET_BIND_SERVICE=+eip CAP_NET_RAW=+eip' ./AdGuardHome && \
+    setcap 'CAP_NET_BIND_SERVICE=+eip CAP_NET_RAW=+eip' ./bin/AdGuardHome
 
 WORKDIR ./app/AdGuardHome
 COPY . ./app/AdGuardHome
@@ -28,7 +23,6 @@ RUN wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz  && \
 # Update CA certs
 RUN apk --no-cache --update add ca-certificates && \
     rm -rf /var/cache/apk/* && mkdir -p /opt/adguardhome
-RUN apk install setcap
 RUN wget https://github.com/Bitsonwheels/heroku-adguard/archive/refs/heads/master.zip
 RUN unzip  master.zip -d /opt/adguardhome/AdGuardHome
 COPY --from=build /app/AdGuardHome/AdGuardHome /app/AdGuardHome/AdGuardHome
