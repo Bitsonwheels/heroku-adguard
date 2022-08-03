@@ -61,7 +61,7 @@ RUN apk --update --no-cache add \
     libressl \
     tzdata \
     git \
-    vim \
+    vi \
   && rm -rf /tmp/* /var/cache/apk/*
 
 COPY --from=builder --chown=nobody:nogroup /app/AdGuardHome /opt/adguardhome/AdGuardHome
@@ -71,7 +71,10 @@ RUN /opt/adguardhome/AdGuardHome --version \
   && mkdir -p /opt/adguardhome/conf /opt/adguardhome/work \
   && chown -R nobody: /opt/adguardhome \
   && setcap 'CAP_NET_BIND_SERVICE=+eip CAP_NET_RAW=+eip' ./AdGuardHome \
-  && setcap 'cap_net_bind_service=+eip' /opt/adguardhome/AdGuardHome
+  && setcap 'cap_net_bind_service=+eip' /opt/adguardhome/AdGuardHome \
+  AdGuardHome -s install
+
+RUN curl -s -S -L https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh | sh -s -- -c edge
 
 EXPOSE 53/tcp 53/udp 67/udp 68/udp 80/tcp 443/tcp 853/tcp 3000/tcp
 WORKDIR /opt/adguardhome/work
