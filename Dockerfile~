@@ -1,4 +1,4 @@
-FROM  golang.alpine AS builder
+FROM alpine:latest AS builder
 #RUN adduser -D bits
 #USER bits
 
